@@ -1,18 +1,24 @@
 var fs = require('fs');
 var cheerio = require('cheerio');
 
-var content = fs.readFileSync('./res.html');
+var $ = cheerio.load(fs.readFileSync('./res.html'));
 
-var $ = cheerio.load(content);
+// Selector works since it's the only table nested 3 levels deep.
+$("table table table tbody").children("tr").each(function() {
 
-var trs = $("table table table tbody").children("tr").each(function() {
   var curr = $("td:first-child", this);
   var plainText = curr.clone().children().remove().end().text();
 
   console.log(
-    "\n" 
-    + "Place Name:      " + curr.children("h4").text() + "\n"
-    + "Meeting Motto:   " + curr.children("b").text() + "\n"
-    + "Address:         " + plainText.trim().replace("\n","").replace( /  +/g, ' ' ).replace(/\s\s+/g, ' ')  );
+    "" 
+    // Print Place name
+    //+ "\n"
+    //+ "Place Name:      " + curr.children("h4").text() + "\n"
+    // Print Meeting Motto
+    //+ "Meeting Motto:   " + curr.children("b").text() + "\n"
+    //
+    // Print Meeting Address, removing whitespace and excess spaces
+    + plainText.trim().replace(/\s\s+/g, ' ')  
+  );
 
 });
