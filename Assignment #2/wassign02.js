@@ -1,9 +1,9 @@
-var fs = require('fs');
-var cheerio = require('cheerio');
+var fs = require("fs");
+var cheerio = require("cheerio");
 
-var $ = cheerio.load(fs.readFileSync('./res.html'));
+var $ = cheerio.load(fs.readFileSync("./res.html"));
 
-// Selector works since it's the only table nested 3 levels deep.
+// Selector works since it"s the only table nested 3 levels deep.
 $("table table table tbody").children("tr").each(function() {
 
   var curr = $("td:first-child", this);
@@ -18,7 +18,7 @@ $("table table table tbody").children("tr").each(function() {
     //+ "Meeting Motto:   " + curr.children("b").text() + "\n"
     //
     // Print Meeting Address, removing whitespace and excess spaces
-    + plainText.trim().replace(/\s\s+/g, ' ')  
+    + plainText.trim().replace(/\s\s+/g, " ")  
   );
 
 });
