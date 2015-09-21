@@ -25,15 +25,9 @@ function timeOut() {
         }
       });
 
-      if(i === addresses.length-2) {
-        console.log(meetingsData);
-      }
-
       i++;
 
-      if (i < addresses.length - 1) {
-        setTimeout(timeOut, 110); // function calls itself
-      }
+      i < addresses.length - 1 ? setTimeout(timeOut, 110) : console.log(meetingsData);
     });
   }
 }
