@@ -17,6 +17,7 @@ function iterateThroughArray(arr, i) {
     .substr(0, arr[i].indexOf(","))
     .replace(/\s\(.*$/, "")
     .replace(/\s/g, "+");
+
   request(apiUrl + addr + "+New+York,+NY" + keyString, function(err, resp, body) {
     if (err) throw err;
     meetingsData.push({
@@ -26,7 +27,6 @@ function iterateThroughArray(arr, i) {
         lng: JSON.parse(body).results[0].geometry.location.lng
       }
     });
-    console.log("i: " + i + ", arr.length: " + arr.length);
 
     // if we're at the end of the array, log results.
     // Otherwise, the function calls itself again after 110ms.
@@ -34,5 +34,4 @@ function iterateThroughArray(arr, i) {
   });
 }
 
-console.log(addresses);
 iterateThroughArray(addresses, 0);
