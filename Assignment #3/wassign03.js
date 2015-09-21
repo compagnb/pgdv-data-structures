@@ -16,7 +16,7 @@ var meetingsData = [];
 
 // Define a function that iterates over the array,
 // retrieving lat/long for each item and calling
-// itself until it reached the end of the array it is passed.
+// itself until it reaches the end of the array it is passed.
 function iterateOverArray(arr, i) {
   var addr = arr[i]
     .substr(0, arr[i].indexOf(","))
