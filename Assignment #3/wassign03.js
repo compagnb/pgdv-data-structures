@@ -12,7 +12,7 @@ var apiUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 var keyString = "&key=" + apiKey;
 var meetingsData = [];
 
-function iterateThroughArray(arr, i) {
+function iterateOverArray(arr, i) {
   var addr = arr[i]
     .substr(0, arr[i].indexOf(","))
     .replace(/\s\(.*$/, "")
@@ -30,8 +30,8 @@ function iterateThroughArray(arr, i) {
 
     // if we're at the end of the array, log results.
     // Otherwise, the function calls itself again after 110ms.
-    i < arr.length - 1 ? setTimeout(iterateThroughArray, 110, arr, i+1) : console.log(meetingsData);
+    i < arr.length - 1 ? setTimeout(iterateOverArray, 110, arr, i+1) : console.log(meetingsData);
   });
 }
 
-iterateThroughArray(addresses, 0);
+iterateOverArray(addresses, 0);
