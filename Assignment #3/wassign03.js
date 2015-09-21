@@ -9,7 +9,7 @@ var addresses = fs.readFileSync("res")
   .filter(function(n){return n});
   
 var apiUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-var keyString = "&key=" + apiKey;
+var keyStr = "&key=" + apiKey;
 var meetingsData = [];
 
 function iterateOverArray(arr, i) {
@@ -18,7 +18,7 @@ function iterateOverArray(arr, i) {
     .replace(/\s\(.*$/, "")
     .replace(/\s/g, "+");
 
-  request(apiUrl + addr + "+New+York,+NY" + keyString, function(err, resp, body) {
+  request(apiUrl + addr + "+New+York,+NY" + keyStr, function(err, resp, body) {
     if (err) throw err;
     meetingsData.push({
       address: addr.replace(/\+/g, " "),
@@ -28,8 +28,8 @@ function iterateOverArray(arr, i) {
       }
     });
 
-    // if we're at the end of the array, log results.
-    // Otherwise, the function calls itself again after 110ms.
+    // If we're at the end of the array, log results.
+    // Otherwise, the function calls itself again after 110ms with i+1
     i < arr.length - 1 ? setTimeout(iterateOverArray, 110, arr, i+1) : console.log(meetingsData);
   });
 }
