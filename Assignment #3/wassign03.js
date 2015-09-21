@@ -12,7 +12,7 @@ var addresses = fs.readFileSync("res")
   .toString()
   .split("\n")
   // Delete empty array elements
-  .filter(n => n);
+  .filter(function(n){return n});
   
 // Define a function that iterates over the array,
 // retrieving lat/long for each item and calling
