@@ -14,7 +14,6 @@ var addresses = fs.readFileSync("res")
   // Delete empty array elements
   .filter(n => n);
   
-
 // Define a function that iterates over the array,
 // retrieving lat/long for each item and calling
 // itself until it reaches the end of the array it is passed.
