@@ -1,10 +1,12 @@
-var fs = require("fs");
+var fs      = require("fs");
 var request = require("request");
 
-const API_KEY = process.env.GMAKEY;
-const API_URL = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-const KEY_STR = "&key=" + API_KEY;
+const API_KEY   = process.env.GMAKEY;
+const API_URL   = "https://maps.googleapis.com/maps/api/geocode/json?address=";
+const KEY_STR   = "&key=" + API_KEY;
 const FILE_NAME = "resLatLong.txt";
+
+var meetingsData = [];
 
 var addresses = fs.readFileSync("res")
   .toString()
@@ -12,7 +14,6 @@ var addresses = fs.readFileSync("res")
   // Delete empty array elements
   .filter(n => n);
   
-var meetingsData = [];
 
 // Define a function that iterates over the array,
 // retrieving lat/long for each item and calling
