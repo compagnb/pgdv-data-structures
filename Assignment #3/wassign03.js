@@ -10,7 +10,7 @@ var addresses = fs.readFileSync("res")
   .toString()
   .split("\n")
   // Delete empty array elements
-  .filter(function(n){return n});
+  .filter(n => n);
   
 var meetingsData = [];
 
