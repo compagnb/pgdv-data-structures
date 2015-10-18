@@ -44,6 +44,7 @@ async.waterfall([
     cursor.reset().write("Writing to Mongo DB...");
     MongoClient.connect(url, function(err, db) {
       if (err) {return cb("error writing to DB");}
+      db.collection("meetings").drop();
       db.collection("meetings").insert(res);
       cursor.horizontalAbsolute(0).eraseLine().green().write("✓ Wrote " + res.length + " objects to DB.\n");
       db.close();
