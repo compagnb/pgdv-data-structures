@@ -47,6 +47,7 @@ function getRowInfo(row) {
 }
 
 function getLocationName($) {
+  // @TODO Clean location Name
   return $("td:first-child h4").text();
 }
 
@@ -75,8 +76,8 @@ function getTimesFromRow($) {
        .map((str) => {
          var match = str.match(/([\d]{1,2}:[\d]{1,2}|[\d]{1,2}):([\d]{1,2}) ([aApP][mM])/);
          return {
-           hour: match[1],
-           minute: match[2],
+           hour: parseInt(match[1], 10),
+           minute: parseInt(match[2], 10),
            ampm: match[3]
          };
        });
@@ -84,12 +85,12 @@ function getTimesFromRow($) {
      if (!times) {throw "No Times found for " + el}
      var type = el.replace(/.*<b>Meeting Type<\/b>([^<]*).*/, "$1");
      var specialInterest = el.replace(/.*<b>Special Interest<\/b>(.*)$/, "$1");
-      console.log(times);
+
      return {
       day: el.replace(/<b>(\w+) From<\/b>.*/, "$1"),
       type: type === el ? null : type,
       specialInterest: specialInterest === el ? null : specialInterest,
-      times: {
+      hours: {
         from: times[0],
         to: times[1]
       }
