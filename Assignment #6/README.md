@@ -2,7 +2,7 @@
 
 ### Installation
 
-* `git checkout` the repository
+* `git clone` the repository
 * navigate to _Assignment #6_ in the terminal
 * `npm install` 
 * `export GMAKEY="your_api_key"`
