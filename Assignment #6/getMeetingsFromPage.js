@@ -42,13 +42,23 @@ function getRowInfo(row) {
     times: getTimesFromRow($),
     isAccessible: isAccessible($),
     details: getDetails($),
-    name: getLocationName($)
+    locationName: getLocationName($),
+    locationMotto: getLocationMotto($)
   });
 }
 
+function getLocationMotto($) {
+  return $("td:first-child b")
+  .text()
+  .replace(/ $/, "")
+  .replace(/(.*) -.*$/, "$1")
+  .replace(/\s*\(:?I{1,2}\)/, "");
+}
+
 function getLocationName($) {
-  // @TODO Clean location Name
-  return $("td:first-child h4").text();
+  return $("td:first-child h4")
+  .text()
+  .replace(/ $/, "");
 }
 
 function getDetails($) {
