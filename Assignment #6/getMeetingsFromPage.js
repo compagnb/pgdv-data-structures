@@ -116,7 +116,7 @@ function getZip(addr) {
 }
 
 function cleanAddress(addr) {
-  return addr.substr(0, addr.indexOf(",")).replace(/\s\(.*$/, "")
+  return addr.substr(0, addr.indexOf(",")).replace(/\s\(.*$/, "");
 }
   
 function getGoogleAddress(item, cb) {
