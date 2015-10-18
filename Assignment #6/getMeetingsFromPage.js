@@ -9,7 +9,7 @@ const KEY_STR   = "&key=" + API_KEY;
 
 module.exports = function getMeetingsFromPage(body, cb, cursor) {
   if (!API_KEY) {
-    cursor.red().bold().write("Missing Google API Key!");
+    cursor.red().bold().write("✘ Missing Google API Key!").reset();
     throw "MUST provide GMAKEY";
   }
 
