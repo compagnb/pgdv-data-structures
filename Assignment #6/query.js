@@ -12,7 +12,10 @@ MongoClient.connect(url, function(err, db) {
     {$unwind: "$times"},
     {$match: {$or: [
       {$and: [
-        {"times.hours.from.hour": {$gte: 7}},
+        {$and: [
+          {"times.hours.from.hour" : {$gte: 7}},
+          {"times.hours.from.hour" : {$lt: 12}}
+        ]},
         {"times.day": "Tuesdays"},
         {"times.hours.from.ampm": "PM"}
       ]},
@@ -27,7 +30,9 @@ MongoClient.connect(url, function(err, db) {
       "locationName": 1, 
       "locationMotto": 1, 
       "address": 1, 
-      "isAccessible": 1, 
+      "isAccessible": 1,
+      "specialInterest": 1,
+      "details": 1,
       "meetingTimes": {
         $concat: [
           "$times.day", ", ",
@@ -59,7 +64,9 @@ MongoClient.connect(url, function(err, db) {
         "→ " 
         + (el.locationMotto ? el.locationMotto + "\n" : "") 
         + (el.locationName ? el.locationName + "\n" : "") 
-        + el.address + "\n" 
+        + (el.specialInterest ? "Special Interest: " + el.specialInterest + "\n" : "")
+        + (el.details ? "Details: " + el.details + "\n" : "")
+        + "Address: " + el.address + "\n" 
         + "Wheelchair access: " + (el.isAccessible ? "✓ Yes" : "✘ No") + "\n"
       );
       cursor.underline().write(el.meetingTimes + "\n\n").reset();
