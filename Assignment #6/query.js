@@ -24,8 +24,10 @@ MongoClient.connect(url, function(err, db) {
     ]}},
     {$project: {
       "_id": 0, 
-      "name": 1, 
+      "locationName": 1, 
+      "locationMotto": 1, 
       "address": 1, 
+      "isAccessible": 1, 
       "meetingTimes": {
         $concat: [
           "$times.day", ", ",
@@ -52,10 +54,17 @@ MongoClient.connect(url, function(err, db) {
       }
     }}
   ], (err, res) => {
-    cursor.underline().green().write("✓ " + res.length + " meetings Tuesdays 7pm or later (incl. midnight)\n").reset();
     res.forEach((el) => {
-      cursor.write("→ " + el.address + ", " + el.meetingTimes + "\n");
+      cursor.write(
+        "→ " 
+        + (el.locationMotto ? el.locationMotto + "\n" : "") 
+        + (el.locationName ? el.locationName + "\n" : "") 
+        + el.address + "\n" 
+        + "Wheelchair access: " + (el.isAccessible ? "✓ Yes" : "✘ No") + "\n"
+      );
+      cursor.underline().write(el.meetingTimes + "\n\n").reset();
     });
+    cursor.green().write("✓ Found " + res.length + " meetings Tuesdays 7pm or later (incl. midnight)\n\n").reset();
     db.close();
   });
 });
