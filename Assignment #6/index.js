@@ -24,7 +24,7 @@ async.waterfall([
         cursor.red().bold().write("✘ Could not connect to MongoDB\n").reset();
         return cb(err);
       }
-      cursor.green().write("\n✓ found MongoDB.\n");
+      cursor.green().write("✓ Found MongoDB.\n");
       db.close();
       cb();
     });
