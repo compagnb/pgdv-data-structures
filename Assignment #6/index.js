@@ -31,7 +31,7 @@ async.waterfall([
     cursor.reset().write("→ Retrieving page from " + meetingsUrl);
     request(meetingsUrl, function (err, res, body) {
       if(err) cb(err);
-      cursor.green().write("\n✓ Retrieved Page.\n");
+      cursor.green().write("\n✓ Retrieved page.\n");
       cb(null, body);
     });
   },
@@ -43,11 +43,11 @@ async.waterfall([
   (res, cb) => {
     cursor.reset().write("Writing to Mongo DB...");
     MongoClient.connect(url, function(err, db) {
-      if (err) {return console.dir(err);}
+      if (err) {return cb("error writing to DB");}
       db.collection("meetings").insert(res);
-      db.close();
       cursor.horizontalAbsolute(0).eraseLine().green().write("✓ Wrote " + res.length + " objects to DB.\n");
-      cb(null, res.length);
+      db.close();
+      cb(null, db);
     });
   }
 ]);

@@ -71,18 +71,28 @@ function getTimesFromRow($) {
    .split("<br><br>")
    .filter((el) => el)
    .map((el) => {
-     var times = el.match(/\d{1,2}:\d{1,2} [aApP][mM]/g);
-     if (!times) {throw "No Times found for " + el}
+     var times = el.match(/\d{1,2}:\d{1,2} [aApP][mM]/g)
+       .map((str) => {
+         var match = str.match(/([\d]{1,2}:[\d]{1,2}|[\d]{1,2}):([\d]{1,2}) ([aApP][mM])/);
+         return {
+           hour: match[1],
+           minute: match[2],
+           ampm: match[3]
+         };
+       });
 
+     if (!times) {throw "No Times found for " + el}
      var type = el.replace(/.*<b>Meeting Type<\/b>([^<]*).*/, "$1");
      var specialInterest = el.replace(/.*<b>Special Interest<\/b>(.*)$/, "$1");
-
+      console.log(times);
      return {
       day: el.replace(/<b>(\w+) From<\/b>.*/, "$1"),
-      from: times[0],
-      to: times[1],
       type: type === el ? null : type,
-      specialInterest: specialInterest === el ? null : specialInterest
+      specialInterest: specialInterest === el ? null : specialInterest,
+      times: {
+        from: times[0],
+        to: times[1]
+      }
      }
    })
   );
