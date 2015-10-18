@@ -10,17 +10,17 @@ const KEY_STR   = "&key=" + API_KEY;
 module.exports = function getMeetingsFromPage(body, cb, cursor) {
   if (!API_KEY) {
     cursor.red().bold().write("✘ Missing Google API Key!").reset();
-    throw "MUST provide GMAKEY";
+    return cb(err);
   }
 
-  cursor.reset().write("Parsing page....");
+  cursor.reset().write("→ Parsing page....");
   var $ = cheerio.load(body);
   cursor.horizontalAbsolute(0).eraseLine().green().write("✓ Done parsing.\n");
   
   async.mapSeries(
     _.map($("table table table tbody").children("tr"), getRowInfo),
     (item, cb) => {
-      cursor.horizontalAbsolute(0).eraseLine().reset().write("Asking Google about " + item.address);
+      cursor.horizontalAbsolute(0).eraseLine().reset().write("→ Asking Google about " + item.address);
       getGoogleAddress(item, cb)
     },
     (err, res) => {
