@@ -11,4 +11,4 @@ _Caveat_: Cloud9 comes with an outdated version of `node` by default, so this wi
 
 ### Querying (Assignment 5)
 
-* `node query.js`
+* `node query.js` after completing installation
