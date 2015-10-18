@@ -7,15 +7,25 @@ const API_KEY   = process.env.GMAKEY;
 const API_URL   = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 const KEY_STR   = "&key=" + API_KEY;
 
-module.exports = function getMeetingsFromPage(body, cb) {
-  if (!API_KEY) {throw "MUST provide GMAKEY"}
+module.exports = function getMeetingsFromPage(body, cb, cursor) {
+  if (!API_KEY) {
+    cursor.red().bold().write("Missing Google API Key!");
+    throw "MUST provide GMAKEY";
+  }
+
+  cursor.reset().write("Parsing page....");
   var $ = cheerio.load(body);
+  cursor.horizontalAbsolute(0).eraseLine().green().write("✓ Done parsing.\n");
   
   async.mapSeries(
     _.map($("table table table tbody").children("tr"), getRowInfo),
-    getGoogleAddress,
+    (item, cb) => {
+      cursor.horizontalAbsolute(0).eraseLine().reset().write("Asking Google about " + item.address);
+      getGoogleAddress(item, cb)
+    },
     (err, res) => {
       if (err) console.error(err.message);
+      cursor.horizontalAbsolute(0).eraseLine().reset().green().write("✓ Done getting address data from Google\n");
       cb(null, res);
     }
   );
@@ -24,8 +34,6 @@ module.exports = function getMeetingsFromPage(body, cb) {
 function getRowInfo(row) {
   var $ = cheerio.load(row);
   var addr = getAddressFromRow($);
-
-  console.log(getLocationName($));
 
   return ({
     originalAddress: addr,
@@ -57,10 +65,26 @@ function isAccessible($) {
 }
 
 function getTimesFromRow($) {
-  // @TODO Parse
   return($("td:nth-child(2)")
-    .text()
-    .replace(/\s\s+/g, "")
+   .html()
+   .replace(/\s\s+/g, "")
+   .split("<br><br>")
+   .filter((el) => el)
+   .map((el) => {
+     var times = el.match(/\d{1,2}:\d{1,2} [aApP][mM]/g);
+     if (!times) {throw "No Times found for " + el}
+
+     var type = el.replace(/.*<b>Meeting Type<\/b>([^<]*).*/, "$1");
+     var specialInterest = el.replace(/.*<b>Special Interest<\/b>(.*)$/, "$1");
+
+     return {
+      day: el.replace(/<b>(\w+) From<\/b>.*/, "$1"),
+      from: times[0],
+      to: times[1],
+      type: type === el ? null : type,
+      specialInterest: specialInterest === el ? null : specialInterest
+     }
+   })
   );
 }
 
