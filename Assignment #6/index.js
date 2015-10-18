@@ -13,9 +13,6 @@ if(!process.env.IP) { process.env.IP = "127.0.0.1" }
 const url = "mongodb://" + process.env.IP + ":27017/meetings";
 const meetingsUrl = 'http://www.nyintergroup.org/meetinglist/meetinglist.cfm?zone=02&borough=M';
 
-// The following will not work on Cloud9 unless
-// Node is updated by running 'nvm install stable'
-
 async.waterfall([
   // Check if MongoDB is running
   (cb) => {
