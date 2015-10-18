@@ -10,15 +10,9 @@ const KEY_STR   = "&key=" + API_KEY;
 module.exports = function getMeetingsFromPage(body, cb) {
   if (!API_KEY) {throw "MUST provide GMAKEY"}
   var $ = cheerio.load(body);
-
+  
   async.mapSeries(
-    _.chain($("table table table tbody").children("tr"))
-      .map(getRowInfo)
-      .map(getAddressFromRow)
-      .map(cleanAddress)
-      .map(getNameFromRow)
-      .map(cleanAddress)
-      .value(),
+    _.map($("table table table tbody").children("tr"), getRowInfo),
     getGoogleAddress,
     (err, res) => {
       if (err) console.error(err.message);
@@ -28,23 +22,43 @@ module.exports = function getMeetingsFromPage(body, cb) {
 }
 
 function getRowInfo(row) {
-  var addr = getAddressFromRow(row);
+  var $ = cheerio.load(row);
+  var addr = getAddressFromRow($);
 
-  return {
+  console.log(getLocationName($));
+
+  return ({
     originalAddress: addr,
     address: cleanAddress(addr),
     zip: getZip(addr),
-    name: getNameFromRow(row)
-  };
+    times: getTimesFromRow($),
+    isAccessible: isAccessible($),
+    details: getDetails($),
+    name: getLocationName($)
+  });
 }
 
-function getNameFromRow(row) {
-  var $ = cheerio.load(row);
-  return($("td:nth-child(2)", row)
+function getLocationName($) {
+  return $("td:first-child h4").text();
+}
+
+function getDetails($) {
+  return $("td:first-child div")
     .clone()
     .children()
     .remove()
     .end()
+    .text()
+    .replace(/\s\s+/g, "")
+}
+
+function isAccessible($) {
+  return $("td:first-child").find('img[alt="Wheelchair Access"]').length !== 0;
+}
+
+function getTimesFromRow($) {
+  // @TODO Parse
+  return($("td:nth-child(2)")
     .text()
     .replace(/\s\s+/g, "")
   );
@@ -53,15 +67,15 @@ function getNameFromRow(row) {
 function getZip(addr) {
   var zip, re;
   re = /[0-9]{5}/.exec(addr);
-  return zip = (re) ? re[0] : null;
+  return (re) ? re[0] : null;
 }
 
-function cleanAddress(item) {
-  return addr.substr(0, item.indexOf(",")).replace(/\s\(.*$/, "")
+function cleanAddress(addr) {
+  return addr.substr(0, addr.indexOf(",")).replace(/\s\(.*$/, "")
 }
   
 function getGoogleAddress(item, cb) {
-  request(API_URL + item.googleAddress + KEY_STR, function(err, resp, body) {
+  request(API_URL + item.address.replace(" ", "+") + KEY_STR, function(err, resp, body) {
     if (err) throw err;
     if (JSON.parse(body).status === "ZERO_RESULTS") {throw item}
 
@@ -74,9 +88,8 @@ function getGoogleAddress(item, cb) {
   });
 }
 
-function getAddressFromRow(item) {
-  var $ = cheerio.load(item);
-  return($("td:first-child", item)
+function getAddressFromRow($, row) {
+  return($("td:first-child", row)
     .clone()
     .children()
     .remove()
